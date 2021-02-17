@@ -1,0 +1,43 @@
+:-scelta(destra), posizione(_,16,_).
+:-scelta(sopra), posizione(16,_,_).
+:-scelta(sotto), posizione(_,_,16).
+:-scelta(sinistra), posizione(_,_,16).
+
+celleNonVisitate(Y,X,Z):- cella(Y,X,Z), not celleVisitate(Y,X,Z).
+
+celleAdiacenti(Y,X,Z,sinistra):-cella(Y,X,Z), posizione(Y,Xc,Zc),X = Xc + 16.
+celleAdiacenti(Y,X,Z,destra):-cella(Y,X,Z), posizione(Y,Xc,Zc),X = Xc - 16.
+celleAdiacenti(Y,X,Z,sotto):-cella(Y,X,Z), posizione(Yc,X,Zc),Y = Yc + 16.
+celleAdiacenti(Y,X,Z,sopra):-cella(Y,X,Z), posizione(Yc,X,Zc),Y = Yc - 16.
+
+celleAdiacentiNemico(Y,X,Z):-cella(Y,X,Z), nemico(Y,Xc,Zc),X = Xc + 16.
+celleAdiacentiNemico(Y,X,Z):-cella(Y,X,Z), nemico(Y,Xc,Zc),X = Xc - 16.
+celleAdiacentiNemico(Y,X,Z):-cella(Y,X,Z), nemico(Yc,X,Zc),Y = Yc + 16.
+celleAdiacentiNemico(Y,X,Z):-cella(Y,X,Z), nemico(Yc,X,Zc),Y = Yc - 16.
+
+scelta(destra)|scelta(sinistra)|scelta(sopra)|scelta(sotto).
+
+celleStrategia(Y,X,Z,sinistra,S):-strategia(S),celleNonVisitate(Y,X,Z), posizione(Y,Xc,_),X = Xc + (S*16).
+celleStrategia(Y,X,Z,destra,S):-strategia(S),celleNonVisitate(Y,X,Z), posizione(Y,Xc,_),X = Xc - (S*16).
+celleStrategia(Y,X,Z,sotto,S):-strategia(S),celleNonVisitate(Y,X,Z), posizione(Yc,X,_),Y = Yc + (S*16).
+celleStrategia(Y,X,Z,sopra,S):-strategia(S),celleNonVisitate(Y,X,Z), posizione(Yc,X,_),Y = Yc - (S*16).
+
+%sceltaVersoCellaStrategia(destra):- posizione(Y,X,Z), Y = 16.
+%sceltaVersoCellaStrategia(destra):- posizione(Y,X,Z), Y = 32.
+%sceltaVersoCellaStrategia(destra):- posizione(Y,X,Z), Y = 48.
+
+%sceltaVersoCellaStrategia(sopra):- posizione(Y,X,Z), X = 16.
+%sceltaVersoCellaStrategia(sopra):- posizione(Y,X,Z), X = 32.
+%sceltaVersoCellaStrategia(sopra):- posizione(Y,X,Z), X = 48.
+
+%:-scelta(S),celleAdiacenti(Y,X,Z,S), nemico(Y,X,_).
+
+:-cellaStrategia(Y,X,Z,_,_), nemico(Y,X,_).
+
+:~scelta(S),celleAdiacenti(Y,X,Z,S),celleVisitate(Y,X,Z). [2@1]
+
+:~scelta(S),celleStrategia(Y,X,Z,Sx,E), S <> Sx. [1@1]
+
+:~scelta(S),celleAdiacenti(Y,X,Z,S),celleAdiacentiNemico(Y,X,Z). [3@1]
+
+%:~scelta(S), sceltaVersoCellaStrategia(Sc), S <> Sc. [1@1]
